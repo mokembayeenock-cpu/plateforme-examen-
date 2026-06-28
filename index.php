@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/database/init.php';
+?>
+<?php
 require_once 'includes/config.php';
 require_once 'includes/fonctions.php';
 require_once 'includes/securite.php';
