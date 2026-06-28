@@ -1,0 +1,13 @@
+language = "php"
+
+[packager]
+enabled = true
+
+[languages.php]
+pattern = "**/*.php"
+
+[run]
+command = "php -S 0.0.0.0:8000 -t ."
+
+[env]
+PHP_CLI_SERVER_WORKERS = "4"
