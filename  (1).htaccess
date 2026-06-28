@@ -1,0 +1,43 @@
+# Protection des répertoires
+Options -Indexes
+
+# Redirection erreurs
+ErrorDocument 403 /erreur.php?code=403
+ErrorDocument 404 /erreur.php?code=404
+ErrorDocument 500 /erreur.php?code=500
+
+# Protection fichiers sensibles
+<FilesMatch "\.(sql|log|txt|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protection répertoire includes
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^database/ - [F,L]
+</IfModule>
+
+# Headers de sécurité
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Cache navigateur
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>

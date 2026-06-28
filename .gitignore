@@ -1,0 +1,21 @@
+# Fichiers de configuration sensibles
+includes/config.php
+
+# Fichiers uploadés
+assets/uploads/photos/*
+assets/uploads/*.log
+assets/uploads/*.txt
+!assets/uploads/photos/.gitkeep
+!assets/uploads/.gitkeep
+
+# Fichiers temporaires
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Dossiers système
+.sessions/
+
+# Fichier install après utilisation
+install.php
