@@ -1,45 +1,47 @@
 <?php
-// Configuration de la base de données
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'plateforme_examens');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+// =====================================================
+// CONFIGURATION POUR REPLIT (SQLite)
+// =====================================================
 
-// Configuration du site
-define('SITE_URL', 'http://localhost/plateforme_examens/');
+// Désactiver les erreurs en production
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Chemin de la base SQLite
+define('DB_PATH', __DIR__ . '/../database/plateforme_examens.db');
+
+// URL du site (sera mise à jour automatiquement)
+$protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+define('SITE_URL', $protocol . '://' . $host . '/');
 define('SITE_NAME', 'Plateforme Examens');
 define('ADMIN_EMAIL', 'administrateur@gmail.com');
 
-// Configuration des uploads
+// Chemins
 define('UPLOAD_DIR', __DIR__ . '/../assets/uploads/');
 define('PHOTO_DIR', UPLOAD_DIR . 'photos/');
-define('MAX_PHOTO_SIZE', 2048); // 2KB
+define('MAX_PHOTO_SIZE', 2048);
 
-// Configuration des sessions
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_secure', 0); // Mettre 1 en production avec HTTPS
+// Créer les dossiers si nécessaire
+if (!is_dir(UPLOAD_DIR)) mkdir(UPLOAD_DIR, 0755, true);
+if (!is_dir(PHOTO_DIR)) mkdir(PHOTO_DIR, 0755, true);
 
 // Timezone
-date_default_timezone_set('Africa/Porto-Novo'); // Ajustez selon votre fuseau
+date_default_timezone_set('Africa/Porto-Novo');
 
-// Connexion à la base de données
+// Connexion SQLite
 try {
-    $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-        DB_USER,
-        DB_PASS,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]
-    );
+    $pdo = new PDO('sqlite:' . DB_PATH);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    
+    // Activer les clés étrangères
+    $pdo->exec('PRAGMA foreign_keys = ON');
 } catch (PDOException $e) {
-    die("Erreur de connexion à la base de données : " . $e->getMessage());
+    die("Erreur de connexion : " . $e->getMessage());
 }
 
-// Démarrer la session si pas déjà fait
+// Démarrer la session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
